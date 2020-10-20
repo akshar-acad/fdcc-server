@@ -19,21 +19,18 @@ router.get('/auth', function(req, res, next) {
 
 });
 
-
-
-
-
-
 router.get('/all', function(req, res, next) {
     console.log('Get request for all Users');
     fs.readFile('./data/users.json', 'utf8', (err, data) => {
-        console.log(data)
         if (err) {
-            throw err;
+            return res.status(400).send({
+                message: 'This is an error!'
+            });
+        } else {
+            console.log(JSON.parse(JSON.stringify(data)))
+            res.send((JSON.parse(data)));
 
         }
-
-        res.send(JSON.parse(data));
     });
 });
 
@@ -42,14 +39,15 @@ router.get('/:user_id', function(req, res, next) {
     console.log('Get request for single User');
     fs.readFile('./data/users.json', 'utf8', (err, data) => {
         if (err) {
-            throw err;
+            return res.status(400).send({
+                message: 'This is an error!'
+            });
         }
         let d = JSON.parse(data)
         x = d.find(u => u.user_id == id);
         if (x == null) {
-            res.status(409).json({
-                status: false,
-                error: err['message'],
+            res.status(400).send({
+                message: 'User Not Found!'
             })
         } else { res.send(x); }
 
@@ -57,24 +55,21 @@ router.get('/:user_id', function(req, res, next) {
 });
 router.delete('/:user_id', function(req, res, next) {
     id = req.params.user_id
-    console.log(id)
     console.log('delete request for single User');
     fs.readFile('./data/users.json', 'utf8', (err, data) => {
         if (err) {
-
-            throw err;
+            return res.status(400).send({
+                message: 'This is an error!'
+            });
         }
         let d = JSON.parse(data)
         const index = d.findIndex(x => x.user_id == req.params.user_id);
-        console.log(index)
-            //d[index] = '';
         d.splice(index, 1)
-        console.log(d)
-        fs.writeFile('./data/users.json', JSON.stringify(d), 'utf8', function(err) {
+        fs.writeFileSync('./data/users.json', JSON.stringify(d), 'utf8', function(err) {
             if (err) {
-                console.log("delete failed")
+                res.send("delete failed")
             } else {
-                console.log("delete success")
+                res.send("delete success")
             }
         })
     });
@@ -82,25 +77,21 @@ router.delete('/:user_id', function(req, res, next) {
 
 router.post('/save', function(req, res, next) {
     console.log('Save request for single User');
-
-    //console.log(req.body)
     fs.readFile('./data/users.json', 'utf8', (err, data) => {
         if (err) {
-            ``
-            throw err;
+            return res.status(400).send({
+                message: 'This is an error!'
+            });
         }
         let d = JSON.parse(data)
+        console.log(JSON.parse(JSON.stringify(data)))
         const index = d.findIndex(x => x.user_id == req.body.user_id);
-        console.log(index)
         d[index] = req.body
-            //console.log(d)
-        fs.writeFile('./data/users.json', JSON.stringify(d), 'utf8', function(err) {
+        fs.writeFileSync('./data/users.json', JSON.stringify(d), 'utf8', function(err) {
             if (err) {
-                //                     response = { "error": false, "message": data, "pages": totalPages };
-
-                console.log("change failed")
+                res.send("change failed")
             } else {
-                console.log("change success")
+                res.send("change success")
             }
         })
 

@@ -23,7 +23,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/', index);
 app.use('/users', users);
 
 app.use('*', function(req, res) {
