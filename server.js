@@ -1,7 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
 var users = require('./routes/users');
 
 var cors = require('cors');
